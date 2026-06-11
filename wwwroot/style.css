@@ -1,0 +1,734 @@
+/* ==========================================================================
+   和風デザインシステム (Japanese Traditional Aesthetics)
+   ========================================================================== */
+:root {
+    --bg-dark: #120f0e; /* 漆黒 (Shikkoku) - Deep lacquer black */
+    --bg-card: rgba(30, 25, 22, 0.75); /* 墨色 (Sumiiro) with soft transparency */
+    --bg-card-hover: rgba(38, 32, 28, 0.9);
+    --border-color: rgba(197, 160, 89, 0.15); /* 金泥 (Kindei) - Soft gold lines */
+    --border-color-focus: rgba(212, 175, 55, 0.6); /* 金箔 (Kinhaku) - Bright gold focus */
+    
+    --primary-color: #c5a059; /* 黄金 (Kogane) - Muted Gold */
+    --primary-glow: rgba(197, 160, 89, 0.25);
+    --accent-color: #a92520; /* 漆朱 (Urushishu) - Lacquer cinnabar red */
+    --accent-glow: rgba(169, 37, 32, 0.3);
+    
+    --success-color: #3f6e58; /* 萌黄 (Moegi) - Traditional moss green */
+    --error-color: #a92520; /* 漆朱 (Urushishu) - Red */
+    --draw-color: #70655e; /* 焦茶 (Kogacha) */
+    
+    --text-primary: #f2ede4; /* 生成り (Kinari) - Warm off-white */
+    --text-secondary: #bab1a3; /* 薄墨 (Usuzumi) - Soft warm gray */
+    --text-muted: #7c7368; /* 泥染 (Dorozome) - Dark muted gray */
+    
+    --font-main: 'Shippori Mincho', 'YuMincho', 'Yu Mincho', serif;
+    --font-english: 'Outfit', sans-serif;
+    --border-radius: 4px; /* 直線的で引き締まった和の印象を出すため、丸みを最小限に */
+    --transition-smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* ==========================================================================
+   ベース設定
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark);
+    background-image: 
+        radial-gradient(circle at 20% 30%, rgba(169, 37, 32, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(197, 160, 89, 0.06) 0%, transparent 50%);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    line-height: 1.8;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* 和紙のような微細なテクスチャ風の背景装飾 */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 0);
+    background-size: 24px 24px;
+    z-index: -2;
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   ヘッダー (和装飾)
+   ========================================================================== */
+header {
+    padding: 3rem 1rem 2rem 1rem;
+    text-align: center;
+    position: relative;
+}
+
+header::after {
+    content: "";
+    display: block;
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    margin: 1.5rem auto 0 auto;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.logo-icon {
+    font-size: 2rem;
+    color: var(--accent-color);
+    text-shadow: 0 0 10px var(--accent-glow);
+}
+
+.logo-text {
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    font-family: var(--font-main);
+}
+
+.accent-text {
+    color: var(--primary-color);
+    text-shadow: 0 0 8px var(--primary-glow);
+    font-weight: 800;
+}
+
+.tagline {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-top: 0.5rem;
+}
+
+/* ==========================================================================
+   ナビゲーション / 画面遷移エリア
+   ========================================================================== */
+.nav-bar {
+    max-width: 1350px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.5rem;
+    background: rgba(30, 25, 22, 0.9);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    transition: var(--transition-smooth);
+}
+
+.nav-btn:hover {
+    border-color: var(--primary-color);
+    background: var(--accent-color);
+    color: #fff;
+    box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+/* ==========================================================================
+   メインレイアウト
+   ========================================================================== */
+.container {
+    flex: 1;
+    width: 100%;
+    max-width: 1350px;
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem 4rem 1.5rem;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2.5rem;
+    align-items: start;
+}
+
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================================
+   和風カード (格子・障子の枠組みを想起させるデザイン)
+   ========================================================================== */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 2.5rem 2rem;
+    position: relative;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+    transition: var(--transition-smooth);
+}
+
+/* 四隅に和風の装飾カド（L字の飾り線） */
+.card::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 15px;
+    height: 15px;
+    border-top: 1px solid var(--primary-color);
+    border-left: 1px solid var(--primary-color);
+    opacity: 0.6;
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 15px;
+    height: 15px;
+    border-bottom: 1px solid var(--primary-color);
+    border-right: 1px solid var(--primary-color);
+    opacity: 0.6;
+}
+
+.card:hover {
+    border-color: rgba(197, 160, 89, 0.35);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px double var(--border-color);
+    padding-bottom: 0.75rem;
+}
+
+.header-icon {
+    font-size: 1.25rem;
+    color: var(--accent-color);
+}
+
+.card-header h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+/* ==========================================================================
+   和風フォーム要素
+   ========================================================================== */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 2rem;
+    margin-bottom: 2.5rem;
+}
+
+@media (max-width: 580px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.form-group:nth-child(2) {
+    grid-column: span 2;
+}
+@media (max-width: 580px) {
+    .form-group:nth-child(2) {
+        grid-column: span 1;
+    }
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-group label i {
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    width: 16px;
+    text-align: center;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    background: #191412; /* 黒檀のような深い木質調の暗さ */
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 0.8rem 1rem;
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    transition: var(--transition-smooth);
+    width: 100%;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    outline: none;
+    border-color: var(--border-color-focus);
+    background: #211b18;
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+}
+
+select option {
+    background: #1c1512;
+    color: var(--text-primary);
+}
+
+/* エラーメッセージ */
+.error-msg {
+    color: var(--accent-color);
+    font-size: 0.8rem;
+    height: 18px;
+    display: block;
+    margin-top: 2px;
+}
+
+/* 登録ボタン (朱塗り漆調の重厚なボタン) */
+.submit-btn {
+    width: 100%;
+    padding: 1.1rem;
+    background: linear-gradient(135deg, #8b1c17 0%, var(--accent-color) 60%, #c4322b 100%);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: var(--border-radius);
+    color: #fff;
+    font-family: var(--font-main);
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    transition: var(--transition-smooth);
+    box-shadow: 0 4px 15px rgba(169, 37, 32, 0.35);
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-color);
+    box-shadow: 0 6px 20px rgba(169, 37, 32, 0.55);
+}
+
+.submit-btn:active {
+    transform: translateY(1px);
+}
+
+/* ==========================================================================
+   棋譜履歴 (簡易カード一覧)
+   ========================================================================== */
+.list-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-height: 850px;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    border-bottom: 2px double var(--border-color);
+    padding-bottom: 0.75rem;
+}
+
+.title-with-count {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.title-with-count h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.badge {
+    background: var(--primary-color);
+    color: #0f111a;
+    font-weight: 700;
+    font-size: 0.85rem;
+    font-family: var(--font-english);
+    padding: 0.15rem 0.6rem;
+    border-radius: 12px;
+}
+
+.filter-bar input {
+    width: 250px;
+    background: rgba(30, 25, 22, 0.8);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 0.7rem 1rem;
+    font-family: var(--font-main);
+    color: var(--text-primary);
+}
+
+/* スクロールコンテナ */
+.kifu-container-scroll {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-right: 0.5rem;
+    max-height: 700px;
+}
+
+.kifu-container-scroll::-webkit-scrollbar {
+    width: 4px;
+}
+
+.kifu-container-scroll::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.kifu-container-scroll::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+}
+
+/* 履歴カード */
+.kifu-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    padding: 1.25rem 1.5rem;
+    transition: var(--transition-smooth);
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.kifu-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-color-focus);
+    transform: translateX(4px);
+}
+
+.kifu-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.kifu-meta {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.kifu-type {
+    background: rgba(197, 160, 89, 0.12);
+    color: var(--primary-color);
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid rgba(197, 160, 89, 0.25);
+    border-radius: 2px;
+}
+
+.kifu-turn {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+}
+
+/* 勝敗 */
+.status-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+}
+
+.status-badge.win {
+    background: rgba(63, 110, 88, 0.15);
+    color: #5bb389;
+    border: 1px solid rgba(63, 110, 88, 0.3);
+}
+
+.status-badge.loss {
+    background: rgba(169, 37, 32, 0.15);
+    color: #e05e58;
+    border: 1px solid rgba(169, 37, 32, 0.3);
+}
+
+.status-badge.draw {
+    background: rgba(112, 101, 94, 0.15);
+    color: #bfaea5;
+    border: 1px solid rgba(112, 101, 94, 0.3);
+}
+
+.kifu-versus {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    letter-spacing: 1px;
+}
+
+/* 棋譜詳細グリッド */
+.kifu-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+    padding: 0.8rem;
+    font-size: 0.85rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.detail-label {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+.detail-value {
+    color: var(--text-primary);
+    font-weight: 500;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.edit-btn,
+.delete-btn,
+.table-edit,
+.table-delete {
+    border: 1px solid rgba(197, 160, 89, 0.25);
+    border-radius: 4px;
+    background: rgba(30, 25, 22, 0.9);
+    color: var(--text-primary);
+    padding: 0.45rem 0.8rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.edit-btn:hover,
+.table-edit:hover {
+    background: rgba(197, 160, 89, 0.15);
+    border-color: var(--primary-color);
+}
+
+.delete-btn,
+.table-delete {
+    border-color: rgba(169, 37, 32, 0.25);
+}
+
+.delete-btn:hover,
+.table-delete:hover {
+    background: rgba(169, 37, 32, 0.18);
+    border-color: var(--accent-color);
+}
+
+/* レート警告色 (和風カラー) */
+.rate-warning {
+    color: #d2a44d;
+}
+.rate-danger {
+    color: #e05e58;
+}
+.rate-good {
+    color: #5bb389;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--bg-card);
+    border: 1px dashed var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--text-secondary);
+}
+
+.empty-icon {
+    font-size: 3rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+/* ==========================================================================
+   一覧専用ページ (list.html) 専用スタイル
+   ========================================================================== */
+.list-page-container {
+    max-width: 1350px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+/* 検索・フィルタツールバー */
+.search-toolbar {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.search-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 200px;
+}
+
+.search-field label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.search-field input {
+    background: #191412;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 0.6rem 1rem;
+    font-family: var(--font-main);
+    color: var(--text-primary);
+}
+
+.search-field input:focus {
+    outline: none;
+    border-color: var(--border-color-focus);
+}
+
+/* 和風テーブルのコンテナ */
+.table-wrapper {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    overflow-x: auto;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+
+.kifu-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+/* テーブルヘッダ */
+.kifu-table th {
+    background: #1a1512;
+    color: var(--primary-color);
+    font-weight: 700;
+    padding: 1.1rem 1.25rem;
+    border-bottom: 2px solid var(--border-color);
+    white-space: nowrap;
+    letter-spacing: 1px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.kifu-table th i {
+    margin-left: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.kifu-table th.sorted-asc i,
+.kifu-table th.sorted-desc i {
+    color: var(--primary-color);
+}
+
+/* テーブルボディ */
+.kifu-table td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid rgba(197, 160, 89, 0.1);
+    white-space: nowrap;
+    color: var(--text-primary);
+}
+
+.kifu-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.kifu-table tbody tr:hover {
+    background-color: rgba(197, 160, 89, 0.04);
+}
+
+.kifu-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ==========================================================================
+   フッター
+   ========================================================================== */
+footer {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    margin-top: auto;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}

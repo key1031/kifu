@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="登録済みの将棋棋譜情報をテーブル形式で一覧表示・分析するページです。">
+    <title>棋譜一覧 - 棋譜帳 (KIFU HUB)</title>
+    <!-- Google Fonts: Shippori Mincho, Noto Serif JP, Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Shippori+Mincho:wght@400;500;700;800&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fa-solid fa-chess-knight logo-icon"></i>
+                <span class="logo-text">棋譜一覧 <span class="accent-text">HUB</span></span>
+            </div>
+            <p class="tagline">記録されたすべての対局を俯瞰する</p>
+        </div>
+    </header>
+
+    <!-- 画面遷移ナビゲーション -->
+    <div class="nav-bar">
+        <a href="index.html" class="nav-btn">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>新しい対局を記録する</span>
+        </a>
+        <a href="analysis.html" class="nav-btn">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>成績分析を見る</span>
+        </a>
+    </div>
+
+    <main class="list-page-container">
+        <!-- 検索・絞り込みツールバー -->
+        <section class="search-toolbar">
+            <div class="search-field">
+                <label for="filterOpponent"><i class="fa-solid fa-user"></i> 対局相手</label>
+                <input type="text" id="filterOpponent" placeholder="対局相手の名前で検索...">
+            </div>
+            <div class="search-field">
+                <label for="filterMyStrategy"><i class="fa-solid fa-shield-halved"></i> 自戦型</label>
+                <input type="text" id="filterMyStrategy" placeholder="自戦型（例: 四間飛車）...">
+            </div>
+            <div class="search-field">
+                <label for="filterOpponentStrategy"><i class="fa-solid fa-swords"></i> 対戦型</label>
+                <input type="text" id="filterOpponentStrategy" placeholder="対戦型（例: 居飛車）...">
+            </div>
+        </section>
+
+        <!-- 一覧表セクション -->
+        <section class="table-wrapper">
+            <table class="kifu-table" id="kifuTable">
+                <thead>
+                    <tr>
+                        <th data-sort="gameType">対局形式 <i class="fa-solid fa-sort"></i></th>
+                        <th data-sort="opponent">対局相手 <i class="fa-solid fa-sort"></i></th>
+                        <th data-sort="accountName">アカウント <i class="fa-solid fa-sort"></i></th>
+                        <th data-sort="result">勝敗 <i class="fa-solid fa-sort"></i></th>
+                        <th data-sort="turn">手番 <i class="fa-solid fa-sort"></i></th>
+                        <th data-sort="myStrategy">自戦型 <i class="fa-solid fa-sort"></i></th>
+                        <th data-sort="opponentStrategy">対戦型 <i class="fa-solid fa-sort"></i></th>
+                        <th data-sort="endReason">終局理由 <i class="fa-solid fa-sort"></i></th>
+                        <th data-sort="moves">手数 <i class="fa-solid fa-sort"></i></th>
+                        <th data-sort="matchDate">対局日 <i class="fa-solid fa-sort"></i></th>
+                        <th data-sort="badMoveRate">悪手率 <i class="fa-solid fa-sort"></i></th>
+                        <th data-sort="questionableMoveRate">疑問手率 <i class="fa-solid fa-sort"></i></th>
+                        <th data-sort="comment">コメント</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="kifuTableBody">
+                    <!-- JavaScriptで動的に行が追加されます -->
+                </tbody>
+            </table>
+            <div id="noDataMessage" class="empty-state" style="display: none; border: none; background: transparent;">
+                <i class="fa-solid fa-hourglass-empty empty-icon"></i>
+                <p>該当する棋譜が見つかりませんでした。</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <p>&copy; 2026 KIFU HUB. All rights reserved. Powered by Java 25 & Modern Web Tech.</p>
+        </div>
+    </footer>
+
+    <script src="list.js"></script>
+</body>
+</html>

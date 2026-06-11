@@ -1,0 +1,19 @@
+[
+  {
+    "id": 4,
+    "gameType": "10分切れ負け",
+    "opponent": "tetsutetsu40",
+    "accountName": "Dok46",
+    "result": "勝ち",
+    "turn": "先手",
+    "myStrategy": "居飛車",
+    "opponentStrategy": "四間飛車",
+    "endReason": "投了",
+    "moves": 144,
+    "badMoveRate": 0.00,
+    "questionableMoveRate": 0.00,
+    "matchDate": "2026-06-11",
+    "comment": "",
+    "kifFilePath": "C:\\\\\\\\\\\\\\\\kifu\\\\\\\\\\\\\\\\kifu_4_1781167379184_Dok46-tetsutetsu40-20260610_173437.kif"
+  }
+]

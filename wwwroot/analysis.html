@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="棋譜データをもとに成績分析を行うページです。">
+    <title>成績分析 - 棋譜帳 (KIFU HUB)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Shippori+Mincho:wght@400;500;700;800&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fa-solid fa-chart-line logo-icon"></i>
+                <span class="logo-text">成績分析 <span class="accent-text">HUB</span></span>
+            </div>
+            <p class="tagline">登録済み棋譜を集計し、あなたの勝率を見える化します。</p>
+        </div>
+    </header>
+
+    <div class="nav-bar">
+        <a href="index.html" class="nav-btn">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>新しい対局を記録する</span>
+        </a>
+        <a href="list.html" class="nav-btn">
+            <i class="fa-solid fa-table-list"></i>
+            <span>登録棋譜一覧</span>
+        </a>
+    </div>
+
+    <main class="container">
+        <section class="card analysis-section">
+            <div class="card-header">
+                <i class="fa-solid fa-gauge-high header-icon"></i>
+                <h2>成績概要</h2>
+            </div>
+            <div class="analysis-grid" id="summaryGrid">
+                <div class="analysis-card">
+                    <span class="analysis-title">対局数</span>
+                    <span class="analysis-value" id="totalGames">0</span>
+                </div>
+                <div class="analysis-card">
+                    <span class="analysis-title">勝数</span>
+                    <span class="analysis-value" id="winCount">0</span>
+                </div>
+                <div class="analysis-card">
+                    <span class="analysis-title">負数</span>
+                    <span class="analysis-value" id="lossCount">0</span>
+                </div>
+                <div class="analysis-card">
+                    <span class="analysis-title">総合勝率</span>
+                    <span class="analysis-value" id="winRate">0%</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="card analysis-section">
+            <div class="card-header">
+                <i class="fa-solid fa-layer-group header-icon"></i>
+                <h2>対局形式別勝率</h2>
+            </div>
+            <div class="table-wrapper">
+                <table class="analysis-table" id="gameTypeTable">
+                    <thead>
+                        <tr>
+                            <th>対局形式</th>
+                            <th>対局数</th>
+                            <th>勝率</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card analysis-section">
+            <div class="card-header">
+                <i class="fa-solid fa-shield-halved header-icon"></i>
+                <h2>対戦型別勝率</h2>
+            </div>
+            <div class="table-wrapper">
+                <table class="analysis-table" id="opponentStrategyTable">
+                    <thead>
+                        <tr>
+                            <th>対戦型</th>
+                            <th>対局数</th>
+                            <th>勝率</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card analysis-section">
+            <div class="card-header">
+                <i class="fa-solid fa-calendar-days header-icon"></i>
+                <h2>対局月別勝率</h2>
+            </div>
+            <div class="table-wrapper">
+                <table class="analysis-table" id="monthlyTable">
+                    <thead>
+                        <tr>
+                            <th>年月</th>
+                            <th>対局数</th>
+                            <th>勝率</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <p>&copy; 2026 KIFU HUB. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="analysis.js"></script>
+</body>
+</html>

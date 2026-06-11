@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="将棋の棋譜を記録・管理するための和風Web APIフロントエンドです。">
+    <title>将棋棋譜管理 - 棋譜帳 (KIFU HUB)</title>
+    <!-- Google Fonts: Shippori Mincho, Noto Serif JP, Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Shippori+Mincho:wght@400;500;700;800&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fa-solid fa-chess-knight logo-icon"></i>
+                <span class="logo-text">棋譜帳 <span class="accent-text">HUB</span></span>
+            </div>
+            <p class="tagline">将棋の対局結果を和の美学で記録・分析する</p>
+        </div>
+    </header>
+
+    <!-- 画面遷移ナビゲーション -->
+    <div class="nav-bar">
+        <a href="list.html" class="nav-btn">
+            <i class="fa-solid fa-table-list"></i>
+            <span>登録棋譜一覧を見る</span>
+        </a>
+        <a href="analysis.html" class="nav-btn">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>成績分析を見る</span>
+        </a>
+    </div>
+
+    <main class="container">
+        <div class="dashboard-grid">
+            <!-- 棋譜登録フォームセクション -->
+            <section class="card form-section">
+                <div class="card-header">
+                    <i class="fa-solid fa-brush header-icon"></i>
+                    <h2>対局データの記録</h2>
+                </div>
+                <form id="kifuForm" novalidate>
+                    <input type="hidden" id="kifuId" name="kifuId" value="">
+                    <div class="form-grid">
+                        <!-- 対局形式 -->
+                        <div class="form-group">
+                            <label for="gameType"><i class="fa-solid fa-clock"></i> 対局形式</label>
+                            <select id="gameType" name="gameType" required>
+                                <option value="" disabled selected>選択してください</option>
+                                <option value="10分切れ負け">10分切れ負け</option>
+                                <option value="3分切れ負け">3分切れ負け</option>
+                                <option value="1手10秒">1手10秒</option>
+                                <option value="リアル対局 (時間無制限)">リアル対局 (時間無制限)</option>
+                                <option value="その他">その他</option>
+                            </select>
+                            <span class="error-msg" id="gameTypeError"></span>
+                        </div>
+
+                        <!-- 対局相手 -->
+                        <div class="form-group">
+                            <label for="opponent"><i class="fa-solid fa-user"></i> 対局相手</label>
+                            <input type="text" id="opponent" name="opponent" placeholder="対局相手の名前" required autocomplete="off">
+                            <span class="error-msg" id="opponentError"></span>
+                        </div>
+
+                        <!-- アカウント名 -->
+                        <div class="form-group">
+                            <label for="accountName"><i class="fa-solid fa-id-badge"></i> アカウント名</label>
+                            <input type="text" id="accountName" name="accountName" placeholder="あなたのアカウント名" required autocomplete="off" value="Dok46">
+                            <span class="error-msg" id="accountNameError"></span>
+                        </div>
+
+                        <!-- 対局日 -->
+                        <div class="form-group">
+                            <label for="matchDate"><i class="fa-solid fa-calendar-days"></i> 対局日</label>
+                            <input type="date" id="matchDate" name="matchDate" required>
+                            <span class="error-msg" id="matchDateError"></span>
+                        </div>
+
+                        <!-- 勝敗 -->
+                        <div class="form-group">
+                            <label for="result"><i class="fa-solid fa-trophy"></i> 勝敗</label>
+                            <select id="result" name="result" required>
+                                <option value="" disabled selected>選択してください</option>
+                                <option value="勝ち">勝ち</option>
+                                <option value="負け">負け</option>
+                                <option value="持将棋 / 千日手 / 引き分け">持将棋 / 千日手 / 引き分け</option>
+                            </select>
+                            <span class="error-msg" id="resultError"></span>
+                        </div>
+
+                        <!-- 手番 -->
+                        <div class="form-group">
+                            <label for="turn"><i class="fa-solid fa-arrows-left-right"></i> 手番</label>
+                            <select id="turn" name="turn" required>
+                                <option value="" disabled selected>選択してください</option>
+                                <option value="先手">先手</option>
+                                <option value="後手">後手</option>
+                            </select>
+                            <span class="error-msg" id="turnError"></span>
+                        </div>
+
+                        <!-- 自戦型 (入力に変更) -->
+                        <div class="form-group">
+                            <label for="myStrategy"><i class="fa-solid fa-shield-halved"></i> 自戦型</label>
+                            <input type="text" id="myStrategy" name="myStrategy" placeholder="例: 四間飛車藤井システム" required autocomplete="off">
+                            <span class="error-msg" id="myStrategyError"></span>
+                        </div>
+
+                        <!-- 対戦型 (入力に変更) -->
+                        <div class="form-group">
+                            <label for="opponentStrategy"><i class="fa-solid fa-swords"></i> 対戦型</label>
+                            <input type="text" id="opponentStrategy" name="opponentStrategy" placeholder="例: 居飛車穴熊" required autocomplete="off">
+                            <span class="error-msg" id="opponentStrategyError"></span>
+                        </div>
+
+                        <!-- 終局理由 -->
+                        <div class="form-group">
+                            <label for="endReason"><i class="fa-solid fa-door-open"></i> 終局理由</label>
+                            <select id="endReason" name="endReason" required>
+                                <option value="" disabled selected>選択してください</option>
+                                <option value="投了">投了</option>
+                                <option value="時間切れ">時間切れ</option>
+                                <option value="詰み">詰み</option>
+                                <option value="反則負け">反則負け</option>
+                                <option value="千日手/持将棋">千日手/持将棋</option>
+                                <option value="入玉宣言">入玉宣言</option>
+                                <option value="その他">その他</option>
+                            </select>
+                            <span class="error-msg" id="endReasonError"></span>
+                        </div>
+
+                        <!-- 手数 -->
+                        <div class="form-group">
+                            <label for="moves"><i class="fa-solid fa-list-ol"></i> 手数</label>
+                            <input type="number" id="moves" name="moves" min="1" placeholder="例: 115" required>
+                            <span class="error-msg" id="movesError"></span>
+                        </div>
+
+                        <!-- 悪手率 -->
+                        <div class="form-group">
+                            <label for="badMoveRate"><i class="fa-solid fa-triangle-exclamation"></i> 悪手率 (%)</label>
+                            <input type="number" id="badMoveRate" name="badMoveRate" min="0" max="100" step="0.1" placeholder="例: 5.2">
+                            <span class="error-msg" id="badMoveRateError"></span>
+                        </div>
+
+                        <!-- 疑問手率 -->
+                        <div class="form-group">
+                            <label for="questionableMoveRate"><i class="fa-solid fa-circle-question"></i> 疑問手率 (%)</label>
+                            <input type="number" id="questionableMoveRate" name="questionableMoveRate" min="0" max="100" step="0.1" placeholder="例: 8.5">
+                            <span class="error-msg" id="questionableMoveRateError"></span>
+                        </div>
+
+                        <!-- KIFファイルアップロード -->
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label for="kifFile"><i class="fa-solid fa-file-import"></i> KIFファイル</label>
+                            <input type="file" id="kifFile" name="kifFile" accept=".kif">
+                            <span class="file-help">アップロード先: C:\\kifu</span>
+                            <span class="error-msg" id="kifFileError"></span>
+                        </div>
+
+                        <div class="form-group" style="grid-column: span 2;">
+                            <div id="currentKifFile" class="current-file-info"></div>
+                        </div>
+
+                        <!-- 振り返りコメント -->
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label for="comment"><i class="fa-solid fa-pen"></i> 振り返りコメント</label>
+                            <textarea id="comment" name="comment" placeholder="対局を振り返ってのメモや改善点を記入してください" rows="4" style="padding:0.8rem 1rem; background:#191412; border:1px solid rgba(197,160,89,0.15); color:var(--text-primary); resize:vertical;"></textarea>
+                            <span class="error-msg" id="commentError"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <span>対局記録を保存する</span>
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </section>
+
+            <!-- 棋譜一覧セクション -->
+            <section class="list-section">
+                <div class="list-header">
+                    <div class="title-with-count">
+                        <i class="fa-solid fa-database header-icon"></i>
+                        <h2>直近の記録</h2>
+                        <span id="kifuCount" class="badge">0</span>
+                    </div>
+                    <div class="filter-bar">
+                        <input type="text" id="searchFilter" placeholder="対局相手で検索...">
+                    </div>
+                </div>
+
+                <div id="kifuList" class="kifu-container-scroll">
+                    <!-- JavaScriptで棋譜カードがここに挿入されます -->
+                    <div class="empty-state">
+                        <i class="fa-solid fa-hourglass-empty empty-icon"></i>
+                        <p>登録された棋譜はありません。新しい対局を記録してください。</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <p>&copy; 2026 KIFU HUB. All rights reserved. Powered by Java 25 & Modern Web Tech.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
