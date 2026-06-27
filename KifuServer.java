@@ -79,7 +79,12 @@ public class KifuServer {
 
             try {
                 if ("GET".equalsIgnoreCase(method)) {
-                    handleGet(exchange);
+                    String uriPath = exchange.getRequestURI().getPath();
+                    if (uriPath.matches("/api/kifu/\\d+/download")) {
+                        handleDownload(exchange);
+                    } else {
+                        handleGet(exchange);
+                    }
                 } else if ("POST".equalsIgnoreCase(method)) {
                     handlePost(exchange);
                 } else if ("PUT".equalsIgnoreCase(method)) {
@@ -99,6 +104,48 @@ public class KifuServer {
             Path dataPath = Paths.get(DATA_FILE);
             String json = Files.exists(dataPath) ? Files.readString(dataPath, StandardCharsets.UTF_8) : "[]";
             sendJsonResponse(exchange, 200, json);
+        }
+
+        private void handleDownload(HttpExchange exchange) throws IOException {
+            String[] parts = exchange.getRequestURI().getPath().split("/");
+            long id;
+            try {
+                id = Long.parseLong(parts[parts.length - 2]);
+            } catch (NumberFormatException e) {
+                sendResponse(exchange, 400, "Invalid id");
+                return;
+            }
+
+            synchronized (KifuServer.class) {
+                String jsonStr = Files.readString(Paths.get(DATA_FILE), StandardCharsets.UTF_8);
+                List<Kifu> list = deserializeKifuList(jsonStr);
+                Kifu kifu = list.stream().filter(k -> k.id() == id).findFirst().orElse(null);
+                if (kifu == null || kifu.kifFilePath() == null || kifu.kifFilePath().isBlank()) {
+                    sendResponse(exchange, 404, "KIF file not registered");
+                    return;
+                }
+
+                Path filePath = Paths.get(kifu.kifFilePath()).toAbsolutePath().normalize();
+                Path uploadDir = Paths.get(UPLOAD_DIR).toAbsolutePath().normalize();
+                if (!filePath.startsWith(uploadDir)) {
+                    sendResponse(exchange, 403, "Access Denied");
+                    return;
+                }
+                if (!Files.exists(filePath)) {
+                    sendResponse(exchange, 404, "KIF file not found on disk");
+                    return;
+                }
+
+                byte[] bytes = Files.readAllBytes(filePath);
+                String filename = filePath.getFileName().toString();
+                exchange.getResponseHeaders().set("Content-Type", "application/octet-stream");
+                exchange.getResponseHeaders().set("Content-Disposition",
+                        "attachment; filename=\"" + sanitizeFileName(filename) + "\"");
+                exchange.sendResponseHeaders(200, bytes.length);
+                OutputStream os = exchange.getResponseBody();
+                os.write(bytes);
+                os.close();
+            }
         }
 
         private void handlePost(HttpExchange exchange) throws IOException {

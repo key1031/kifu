@@ -15,12 +15,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // 初期データ取得
     loadKifuData();
 
+    const unanalyzedFilter = document.getElementById('unanalyzedFilter');
+
     // フィルターのイベントリスナー
     [filterOpponent, filterMyStrategy, filterOpponentStrategy].forEach(input => {
         input.addEventListener('input', () => {
             renderTable();
         });
     });
+    unanalyzedFilter.addEventListener('change', renderTable);
 
     // ソートヘッダーのクリックイベント
     kifuTable.querySelectorAll('thead th').forEach(th => {
@@ -99,11 +102,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const myStratVal = filterMyStrategy.value.trim().toLowerCase();
         const oppStratVal = filterOpponentStrategy.value.trim().toLowerCase();
 
+        const unanalyzedOnly = unanalyzedFilter.checked;
+
         const filtered = allKifuData.filter(kifu => {
             const matchOpp = (kifu.opponent || '').toLowerCase().includes(oppVal);
             const matchMyStrat = (kifu.myStrategy || '').toLowerCase().includes(myStratVal);
             const matchOppStrat = (kifu.opponentStrategy || '').toLowerCase().includes(oppStratVal);
-            return matchOpp && matchMyStrat && matchOppStrat;
+            const matchUnanalyzed = !unanalyzedOnly || !(kifu.comment && kifu.comment.trim());
+            return matchOpp && matchMyStrat && matchOppStrat && matchUnanalyzed;
         });
 
         if (filtered.length === 0) {
@@ -141,11 +147,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td><span class="${questRateClass}">${kifu.questionableMoveRate}%</span></td>
                 <td>${escapeHtml(kifu.comment || '')}</td>
                 <td>
+                    ${kifu.kifFilePath ? `<button class="table-download" data-id="${kifu.id}" title="KIFファイルをダウンロード"><i class="fa-solid fa-download"></i></button>` : '<span class="no-kif-icon" title="KIFファイルなし">—</span>'}
                     <button class="table-edit" data-id="${kifu.id}">編集</button>
                     <button class="table-delete" data-id="${kifu.id}">削除</button>
                 </td>
             `;
             tableBody.appendChild(tr);
+        });
+
+        // ダウンロードボタン
+        document.querySelectorAll('.table-download').forEach(btn => {
+            btn.addEventListener('click', () => {
+                window.location.href = `/api/kifu/${btn.getAttribute('data-id')}/download`;
+            });
         });
 
         // テーブルの編集・削除ボタン

@@ -1,19 +1,19 @@
 [
   {
-    "id": 4,
+    "id": 1,
     "gameType": "10分切れ負け",
-    "opponent": "tetsutetsu40",
+    "opponent": "tuka0521",
     "accountName": "Dok46",
     "result": "勝ち",
-    "turn": "先手",
-    "myStrategy": "居飛車",
-    "opponentStrategy": "四間飛車",
-    "endReason": "投了",
-    "moves": 144,
-    "badMoveRate": 0.00,
-    "questionableMoveRate": 0.00,
-    "matchDate": "2026-06-11",
-    "comment": "",
-    "kifFilePath": "C:\\\\\\\\\\\\\\\\kifu\\\\\\\\\\\\\\\\kifu_4_1781167379184_Dok46-tetsutetsu40-20260610_173437.kif"
+    "turn": "後手",
+    "myStrategy": "居飛車力戦形",
+    "opponentStrategy": "嬉野流",
+    "endReason": "詰み",
+    "moves": 177,
+    "badMoveRate": 12.00,
+    "questionableMoveRate": 3.00,
+    "matchDate": "2026-06-23",
+    "comment": "かなり乱暴な将棋。序盤でリードを許したが86手目で相手の飛車を抜いて指しやすくなった。終盤にはミスもあり評価値は乱高下している。",
+    "kifFilePath": "C:\\kifu\\kifu_1_1782545324940_tuka0521-Dok46-20260623_123845.kif"
   }
 ]

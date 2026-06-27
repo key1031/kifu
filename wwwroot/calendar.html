@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="毎日の詰将棋・次の一手の練習記録をカレンダー形式で管理するページです。">
+    <title>練習カレンダー - 棋譜帳 (KIFU HUB)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Shippori+Mincho:wght@400;500;700;800&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fa-solid fa-calendar-days logo-icon"></i>
+                <span class="logo-text">練習カレンダー <span class="accent-text">HUB</span></span>
+            </div>
+            <p class="tagline">詰将棋・次の一手の日々の練習を記録・集計します</p>
+        </div>
+    </header>
+
+    <div class="nav-bar">
+        <a href="index.html" class="nav-btn">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>棋譜を記録する</span>
+        </a>
+        <a href="list.html" class="nav-btn">
+            <i class="fa-solid fa-table-list"></i>
+            <span>棋譜一覧</span>
+        </a>
+        <a href="analysis.html" class="nav-btn">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>成績分析</span>
+        </a>
+        <a href="settings.html" class="nav-btn nav-btn-settings">
+            <i class="fa-solid fa-gear"></i>
+            <span>設定</span>
+        </a>
+    </div>
+
+    <main class="container">
+        <!-- 月ナビゲーション -->
+        <section class="card cal-nav-card">
+            <button id="prevMonth" class="cal-nav-btn" title="前の月">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <div class="cal-nav-center">
+                <span id="currentMonthLabel" class="cal-month-label"></span>
+                <button id="todayBtn" class="cal-today-btn">今月に戻る</button>
+            </div>
+            <button id="nextMonth" class="cal-nav-btn" title="次の月">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </section>
+
+        <!-- 月次サマリー -->
+        <section class="card analysis-section">
+            <div class="card-header">
+                <i class="fa-solid fa-gauge-high header-icon"></i>
+                <h2>月次集計</h2>
+            </div>
+            <div class="analysis-grid cal-summary-grid">
+                <div class="analysis-card">
+                    <span class="analysis-title">詰将棋 総数</span>
+                    <span class="analysis-value" id="totalTsume">0</span>
+                    <span class="analysis-unit">問</span>
+                </div>
+                <div class="analysis-card">
+                    <span class="analysis-title">次の一手 総数</span>
+                    <span class="analysis-value" id="totalNextMove">0</span>
+                    <span class="analysis-unit">問</span>
+                </div>
+                <div class="analysis-card">
+                    <span class="analysis-title">記録日数</span>
+                    <span class="analysis-value" id="recordDays">0</span>
+                    <span class="analysis-unit">日</span>
+                </div>
+                <div class="analysis-card">
+                    <span class="analysis-title">1日平均（合計）</span>
+                    <span class="analysis-value" id="avgTotal">0.0</span>
+                    <span class="analysis-unit">問 / 日</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- カレンダー -->
+        <section class="card cal-section">
+            <div class="cal-weekdays">
+                <div class="cal-weekday sun">日</div>
+                <div class="cal-weekday">月</div>
+                <div class="cal-weekday">火</div>
+                <div class="cal-weekday">水</div>
+                <div class="cal-weekday">木</div>
+                <div class="cal-weekday">金</div>
+                <div class="cal-weekday sat">土</div>
+            </div>
+            <div class="cal-grid" id="calendarGrid"></div>
+            <div class="cal-legend">
+                <span class="legend-item"><span class="legend-dot today-dot"></span>今日</span>
+                <span class="legend-item"><span class="legend-dot record-dot"></span>記録あり</span>
+                <span class="legend-item"><i class="fa-solid fa-pen-to-square" style="font-size:0.75rem; color:var(--text-muted);"></i> クリックで記録・編集</span>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <p>&copy; 2026 KIFU HUB. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- 入力モーダル -->
+    <div id="practiceModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <i class="fa-solid fa-pen-nib modal-header-icon"></i>
+                <h3 id="modalTitle"></h3>
+                <button id="modalClose" class="modal-close-btn" title="閉じる">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-field">
+                    <label for="modalTsume">
+                        <i class="fa-solid fa-chess-king"></i> 詰将棋
+                    </label>
+                    <div class="modal-input-row">
+                        <button class="stepper-btn" data-target="modalTsume" data-delta="-1">−</button>
+                        <input type="number" id="modalTsume" min="0" value="0">
+                        <button class="stepper-btn" data-target="modalTsume" data-delta="1">+</button>
+                        <span class="input-unit">問</span>
+                    </div>
+                </div>
+                <div class="modal-field">
+                    <label for="modalNextMove">
+                        <i class="fa-solid fa-chess-pawn"></i> 次の一手
+                    </label>
+                    <div class="modal-input-row">
+                        <button class="stepper-btn" data-target="modalNextMove" data-delta="-1">−</button>
+                        <input type="number" id="modalNextMove" min="0" value="0">
+                        <button class="stepper-btn" data-target="modalNextMove" data-delta="1">+</button>
+                        <span class="input-unit">問</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modalDelete" class="modal-delete-btn">
+                    <i class="fa-solid fa-trash"></i> 削除
+                </button>
+                <div class="modal-actions">
+                    <button id="modalCancel" class="modal-cancel-btn">キャンセル</button>
+                    <button id="modalSave" class="modal-save-btn">
+                        <i class="fa-solid fa-floppy-disk"></i> 保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="calendar.js"></script>
+</body>
+</html>

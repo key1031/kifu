@@ -34,6 +34,14 @@
             <i class="fa-solid fa-chart-line"></i>
             <span>成績分析を見る</span>
         </a>
+        <a href="calendar.html" class="nav-btn">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>練習カレンダー</span>
+        </a>
+        <a href="settings.html" class="nav-btn nav-btn-settings">
+            <i class="fa-solid fa-gear"></i>
+            <span>設定</span>
+        </a>
     </div>
 
     <main class="list-page-container">
@@ -50,6 +58,14 @@
             <div class="search-field">
                 <label for="filterOpponentStrategy"><i class="fa-solid fa-swords"></i> 対戦型</label>
                 <input type="text" id="filterOpponentStrategy" placeholder="対戦型（例: 居飛車）...">
+            </div>
+            <div class="search-field unanalyzed-field">
+                <label><i class="fa-solid fa-pen-nib"></i> 解析状態</label>
+                <label class="toggle-label" for="unanalyzedFilter">
+                    <input type="checkbox" id="unanalyzedFilter">
+                    <span class="toggle-switch"></span>
+                    <span class="toggle-text">未解析のみ表示</span>
+                </label>
             </div>
         </section>
 

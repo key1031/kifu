@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="KIFU HUB の各種設定を管理するページです。">
+    <title>設定 - 棋譜帳 (KIFU HUB)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Shippori+Mincho:wght@400;500;700;800&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fa-solid fa-gear logo-icon"></i>
+                <span class="logo-text">設定 <span class="accent-text">HUB</span></span>
+            </div>
+            <p class="tagline">KIFU HUB の各種設定を管理します</p>
+        </div>
+    </header>
+
+    <div class="nav-bar">
+        <a href="index.html" class="nav-btn">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>棋譜を記録する</span>
+        </a>
+        <a href="list.html" class="nav-btn">
+            <i class="fa-solid fa-table-list"></i>
+            <span>棋譜一覧</span>
+        </a>
+        <a href="analysis.html" class="nav-btn">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>成績分析</span>
+        </a>
+        <a href="calendar.html" class="nav-btn">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>練習カレンダー</span>
+        </a>
+    </div>
+
+    <main class="container" style="max-width: 680px;">
+        <section class="card settings-card">
+            <div class="card-header">
+                <i class="fa-solid fa-user-gear header-icon"></i>
+                <h2>プロフィール設定</h2>
+            </div>
+
+            <div class="settings-group">
+                <label for="settingsAccountName">
+                    <i class="fa-solid fa-id-badge"></i> アカウント名
+                </label>
+                <p class="settings-desc">棋譜登録フォームのデフォルト値として使用されます。KIF ファイルから自動入力する際の名前の照合にも使われます。</p>
+                <div class="settings-input-row">
+                    <input type="text" id="settingsAccountName" placeholder="例: Dok46" maxlength="50" autocomplete="off">
+                    <button id="saveSettings" class="save-btn">
+                        <i class="fa-solid fa-floppy-disk"></i> 保存
+                    </button>
+                </div>
+                <span id="settingsStatus" class="settings-status"></span>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <p>&copy; 2026 KIFU HUB. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="settings.js"></script>
+</body>
+</html>

@@ -4,15 +4,7 @@
 
 ## 概要
 
-外部サービスや複雑なセットアップ不要で、Java 標準ライブラリのみで動作します。対局データは `kifu_data.json` にローカル保存され、KIF ファイルのアップロードにも対応しています。
-
-## スクリーンショット（画面構成）
-
-| 画面 | URL | 説明 |
-|------|-----|------|
-| 棋譜登録 | `/` | 対局データの入力・編集フォーム |
-| 棋譜一覧 | `/list.html` | 登録済み棋譜のテーブル表示・絞り込み・削除 |
-| 成績分析 | `/analysis.html` | 勝率・対局形式別・対戦型別・月別集計 |
+外部サービスや複雑なセットアップ不要で、Java 標準ライブラリのみで動作します。棋譜データはサーバー上の `kifu_data.json` に保存され、KIF ファイルのアップロード・ダウンロードにも対応しています。練習カレンダーと設定情報はブラウザの `localStorage` に保存されます。
 
 ## 必要環境
 
@@ -31,8 +23,18 @@ java KifuServer
 ブラウザで `http://localhost:8080/` を開いてください。
 
 起動時に以下が自動作成されます。
-- `kifu_data.json` — データファイル（存在しない場合のみ）
+- `kifu_data.json` — 棋譜データファイル（存在しない場合のみ）
 - `C:\kifu\` — KIF ファイルのアップロード先ディレクトリ
+
+## 画面構成
+
+| 画面 | URL | 説明 |
+|------|-----|------|
+| 棋譜登録 | `/` | 対局データの入力・編集フォーム、直近の記録カード一覧 |
+| 棋譜一覧 | `/list.html` | 登録済み棋譜のテーブル表示・絞り込み・ダウンロード・削除 |
+| 成績分析 | `/analysis.html` | 5条件フィルター対応の勝率・終局理由分析 |
+| 練習カレンダー | `/calendar.html` | 詰将棋・次の一手の練習記録（月次集計付き） |
+| 設定 | `/settings.html` | アカウント名などのユーザー設定 |
 
 ## 機能一覧
 
@@ -40,113 +42,99 @@ java KifuServer
 - 対局形式・相手・アカウント名・対局日・勝敗・手番を記録
 - 自戦型・対戦型をテキスト自由入力
 - 終局理由・手数・悪手率・疑問手率を入力
-- KIF ファイルのアップロード（`C:\kifu\` に保存）
-- 振り返りコメントの記録
+- **KIF ファイルのアップロード**（`C:\kifu\` に保存）
+  - Shift-JIS / UTF-8 の両エンコーディングに対応
+  - アップロード時に先手/後手・相手名・手数・対局日などを自動入力
+- 振り返りコメントの記録（入力済みで「解析済み」として扱われる）
 - 既存レコードの編集
+- KIF ファイルが登録済みの棋譜には **KIF ダウンロードボタン** を表示
 
 ### 棋譜一覧（list.html）
 - 全棋譜をテーブル形式で表示
 - 対局相手・自戦型・対戦型でリアルタイム絞り込み
+- **「未解析のみ表示」トグル** — 振り返りコメントが空の棋譜だけを抽出
 - 各列ヘッダーでソート
+- KIF ファイルが存在する棋譜の **ダウンロード**（緑ボタン）
 - 対局の編集・削除操作
 
 ### 成績分析（analysis.html）
-- 総対局数・勝数・負数・総合勝率の集計
-- 対局形式別勝率
-- 対戦型別勝率
-- 月別勝率
+- **5つの絞り込みフィルター**（複数条件の組み合わせ可能）
+  - 表示月 / 対局形式 / 手番 / 自戦型 / 対戦型
+  - 絞り込み中は「N件の条件 ／ 全X局中Y局が対象」を表示
+- 成績概要（総対局数・勝数・負数・総合勝率）
+- 対局形式別勝率（対局形式未絞り込み時のみ表示）
+- 自戦型別勝率（自戦型未絞り込み時のみ表示）
+- 対戦型別勝率（対戦型未絞り込み時のみ表示）
+- **終局理由別の割合**（バーグラフ付き）
+
+### 練習カレンダー（calendar.html）
+- 月単位のカレンダー表示（← / → で月移動、「今月に戻る」ボタン）
+- 各日付をクリックして **詰将棋・次の一手の問題数を記録**
+  - ＋ / − ステッパーボタンで数値を調整
+  - Enter で保存、Escape で閉じる
+  - 記録済みの日付には問題数を表示（詰将棋：金色、次の一手：青色）
+- **月次集計**：詰将棋総数・次の一手総数・記録日数・1日平均（合計）
+- データはブラウザの `localStorage` に保存
+
+### 設定（settings.html）
+- **アカウント名の設定**（`localStorage` に保存）
+  - 棋譜登録フォームのデフォルト値として自動反映
+  - KIF ファイル読み込み時の先手/後手判定に使用
 
 ## API 仕様
 
 ベースURL: `http://localhost:8080`
 
-### GET /api/kifu
+| メソッド | パス | 説明 |
+|---------|------|------|
+| GET | `/api/kifu` | 全棋譜を JSON 配列で返す |
+| POST | `/api/kifu` | 新規棋譜を登録（multipart/form-data または JSON） |
+| PUT | `/api/kifu/{id}` | 指定 ID の棋譜を更新 |
+| DELETE | `/api/kifu/{id}` | 指定 ID の棋譜を削除 |
+| GET | `/api/kifu/{id}/download` | 指定 ID の KIF ファイルをダウンロード |
 
-登録済みの全棋譜を JSON 配列で返します。
+### フィールド仕様
 
-```http
-GET /api/kifu
-```
-
-**レスポンス例:**
-```json
-[
-  {
-    "id": 1,
-    "gameType": "10分切れ負け",
-    "opponent": "山田太郎",
-    "accountName": "Dok46",
-    "result": "勝ち",
-    "turn": "先手",
-    "myStrategy": "四間飛車藤井システム",
-    "opponentStrategy": "居飛車穴熊",
-    "endReason": "投了",
-    "moves": 115,
-    "badMoveRate": 5.20,
-    "questionableMoveRate": 8.50,
-    "matchDate": "2026-06-27",
-    "comment": "序盤で優位を築けた",
-    "kifFilePath": "C:\\kifu\\kifu_1_..."
-  }
-]
-```
-
-### POST /api/kifu
-
-新規棋譜を登録します。`multipart/form-data`（KIFファイル付き）と `application/json` の両形式に対応します。
-
-**必須フィールド:** `gameType`, `opponent`, `accountName`, `result`, `turn`, `myStrategy`, `opponentStrategy`, `endReason`, `moves`
-
-**任意フィールド:** `badMoveRate`, `questionableMoveRate`, `comment`, `matchDate`, `kifFile`
-
-### PUT /api/kifu/{id}
-
-指定 ID の棋譜を更新します。
-
-### DELETE /api/kifu/{id}
-
-指定 ID の棋譜を削除します。
-
-## フィールド仕様
-
-| フィールド | 型 | 説明 | 例 |
-|-----------|-----|------|-----|
-| gameType | string | 対局形式 | `"10分切れ負け"` |
-| opponent | string | 対局相手名 | `"山田太郎"` |
-| accountName | string | 自分のアカウント名 | `"Dok46"` |
-| result | string | 勝敗 | `"勝ち"` / `"負け"` / `"持将棋 / 千日手 / 引き分け"` |
-| turn | string | 手番 | `"先手"` / `"後手"` |
-| myStrategy | string | 自分の戦型（自由記述） | `"四間飛車藤井システム"` |
-| opponentStrategy | string | 相手の戦型（自由記述） | `"居飛車穴熊"` |
-| endReason | string | 終局理由 | `"投了"` / `"時間切れ"` / `"詰み"` など |
-| moves | integer | 手数 | `115` |
-| badMoveRate | number | 悪手率（%、省略可） | `5.2` |
-| questionableMoveRate | number | 疑問手率（%、省略可） | `8.5` |
-| matchDate | string | 対局日（省略可） | `"2026-06-27"` |
-| comment | string | 振り返りコメント（省略可） | `"序盤で優位を築けた"` |
+| フィールド | 型 | 必須 | 説明 |
+|-----------|-----|:---:|------|
+| gameType | string | ○ | 対局形式 |
+| opponent | string | ○ | 対局相手名 |
+| accountName | string | ○ | 自分のアカウント名 |
+| result | string | ○ | 勝敗（`"勝ち"` / `"負け"` / `"持将棋 / 千日手 / 引き分け"`） |
+| turn | string | ○ | 手番（`"先手"` / `"後手"`） |
+| myStrategy | string | ○ | 自戦型（自由記述） |
+| opponentStrategy | string | ○ | 対戦型（自由記述） |
+| endReason | string | ○ | 終局理由 |
+| moves | integer | ○ | 手数 |
+| badMoveRate | number | - | 悪手率（%） |
+| questionableMoveRate | number | - | 疑問手率（%） |
+| matchDate | string | - | 対局日（`YYYY-MM-DD`） |
+| comment | string | - | 振り返りコメント（入力済みで解析済み扱い） |
 
 ## ファイル構成
 
 ```
 kifu/
-├── KifuServer.java       # サーバー本体（コンパイル・実行対象）
-├── kifu_data.json        # 対局データ（自動生成）
-├── CLAUDE.md             # AIアシスタント向け説明ファイル
-└── wwwroot/              # 静的フロントエンドファイル
-    ├── index.html        # 棋譜登録画面
-    ├── list.html         # 棋譜一覧画面
-    ├── analysis.html     # 成績分析画面
-    ├── app.js            # 棋譜登録画面のロジック
-    ├── list.js           # 棋譜一覧画面のロジック
-    ├── analysis.js       # 成績分析画面のロジック
-    └── style.css         # 和風テイストのスタイル
+├── KifuServer.java                   # サーバー本体（コンパイル・実行対象）
+├── kifu_data.json                    # 対局データ（自動生成）
+├── CLAUDE.md                         # AI アシスタント向け説明ファイル
+├── README.md                         # このファイル
+└── wwwroot/                          # 静的フロントエンドファイル
+    ├── index.html / app.js           # 棋譜登録画面
+    ├── list.html / list.js           # 棋譜一覧画面
+    ├── analysis.html / analysis.js   # 成績分析画面
+    ├── calendar.html / calendar.js   # 練習カレンダー画面
+    ├── settings.html / settings.js   # 設定画面
+    └── style.css                     # 和風テイスト共通スタイル
 ```
 
 ## 技術的な注意点
 
-- **JSONパーサ**: 正規表現による簡易実装です。フィールド値に `"` や改行が含まれる場合は正しくパースできない場合があります。本格運用には Jackson / Gson などのライブラリ導入を推奨します。
+- **JSON パーサ**: 正規表現による簡易実装です。フィールド値に `"` や改行が含まれる場合は正しくパースできない場合があります。本格運用には Jackson / Gson などのライブラリ導入を推奨します。
+- **KIF ダウンロード**: `C:\kifu\` 配下のファイルのみ配信します。パストラバーサル攻撃に対するパス検証を実装済みです。
 - **ファイル書き込み**: `synchronized` ブロックで排他制御していますが、高負荷環境での利用には DB 移行を検討してください。
-- **KIFアップロード先**: `C:\kifu\` に固定されています。変更する場合は `KifuServer.java` の `UPLOAD_DIR` 定数を編集してください。
+- **KIF アップロード先**: `C:\kifu\` に固定されています。変更する場合は `KifuServer.java` の `UPLOAD_DIR` 定数を編集してください。
+- **localStorage データ**: 練習カレンダーと設定情報はブラウザの localStorage に保存されます。ブラウザのデータを削除すると消えるため注意してください。
 
 ## ライセンス
 

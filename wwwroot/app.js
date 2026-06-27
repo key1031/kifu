@@ -21,7 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('kifFile');
     const currentKifFile = document.getElementById('currentKifFile');
 
+    const STORAGE_KEY = 'kifuHub_accountName';
+    const DEFAULT_NAME = 'Dok46';
+
     let allKifuData = [];
+
+    // 保存済みアカウント名をフォームに反映
+    accountNameInput.value = localStorage.getItem(STORAGE_KEY) || DEFAULT_NAME;
 
     fileInput.addEventListener('change', handleKifFileSelect);
 
@@ -221,6 +227,7 @@ if (fileInput.files.length > 0) {
                     </div>
                 </div>
                 <div style="display:flex; gap:0.5rem; margin-top:0.75rem;">
+                    ${kifu.kifFilePath ? `<button class="download-btn" data-id="${kifu.id}" title="KIFファイルをダウンロード"><i class="fa-solid fa-download"></i> KIF</button>` : ''}
                     <button class="edit-btn" data-id="${kifu.id}">編集</button>
                     <button class="delete-btn" data-id="${kifu.id}">削除</button>
                 </div>
@@ -229,6 +236,12 @@ if (fileInput.files.length > 0) {
         });
 
         // イベントリスナー: 編集・削除
+        document.querySelectorAll('.download-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                window.location.href = `/api/kifu/${btn.getAttribute('data-id')}/download`;
+            });
+        });
+
         document.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const id = btn.getAttribute('data-id');
@@ -271,7 +284,7 @@ if (fileInput.files.length > 0) {
         document.getElementById('badMoveRate').value = kifu.badMoveRate || '';
         document.getElementById('questionableMoveRate').value = kifu.questionableMoveRate || '';
         document.getElementById('comment').value = kifu.comment || '';
-        document.getElementById('accountName').value = kifu.accountName || 'Dok46';
+        document.getElementById('accountName').value = kifu.accountName || localStorage.getItem(STORAGE_KEY) || DEFAULT_NAME;
         kifuIdInput.value = kifu.id || '';
         fileInput.value = '';
         currentKifFile.textContent = kifu.kifFilePath ? `現在のアップロード: ${kifu.kifFilePath}` : 'アップロード済みのKIFファイルはありません。';
@@ -364,23 +377,23 @@ if (fileInput.files.length > 0) {
     }
 
     function applyKifMetadata(metadata) {
-        const currentAccount = accountNameInput.value.trim() || 'Dok46';
+        const savedName = localStorage.getItem(STORAGE_KEY) || DEFAULT_NAME;
+        const currentAccount = accountNameInput.value.trim() || savedName;
         let accountName = currentAccount;
         let turn = '';
         let opponent = '';
 
         if (metadata.sente && metadata.gote) {
-            if (metadata.sente === currentAccount || currentAccount === '' || currentAccount === 'Dok46') {
+            if (metadata.sente === currentAccount) {
                 accountName = metadata.sente;
                 turn = '先手';
                 opponent = metadata.gote;
-            }
-            if (metadata.gote === currentAccount) {
+            } else if (metadata.gote === currentAccount) {
                 accountName = metadata.gote;
                 turn = '後手';
                 opponent = metadata.sente;
-            }
-            if (!turn && currentAccount === '') {
+            } else {
+                // 合致しない場合は先手を自分として扱う
                 accountName = metadata.sente;
                 turn = '先手';
                 opponent = metadata.gote;

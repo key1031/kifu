@@ -31,9 +31,49 @@
             <i class="fa-solid fa-table-list"></i>
             <span>登録棋譜一覧</span>
         </a>
+        <a href="calendar.html" class="nav-btn">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>練習カレンダー</span>
+        </a>
+        <a href="settings.html" class="nav-btn nav-btn-settings">
+            <i class="fa-solid fa-gear"></i>
+            <span>設定</span>
+        </a>
     </div>
 
     <main class="container">
+        <!-- 絞り込みフィルター -->
+        <section class="card analysis-filter-bar">
+            <div class="filter-grid">
+                <div class="filter-field">
+                    <label><i class="fa-solid fa-calendar-alt"></i> 表示月</label>
+                    <select id="monthFilter"><option value="">全期間</option></select>
+                </div>
+                <div class="filter-field">
+                    <label><i class="fa-solid fa-clock"></i> 対局形式</label>
+                    <select id="gameTypeFilter"><option value="">すべて</option></select>
+                </div>
+                <div class="filter-field">
+                    <label><i class="fa-solid fa-arrows-left-right"></i> 手番</label>
+                    <select id="turnFilter">
+                        <option value="">すべて</option>
+                        <option value="先手">先手</option>
+                        <option value="後手">後手</option>
+                    </select>
+                </div>
+                <div class="filter-field">
+                    <label><i class="fa-solid fa-shield-halved"></i> 自戦型</label>
+                    <select id="myStrategyFilter"><option value="">すべて</option></select>
+                </div>
+                <div class="filter-field">
+                    <label><i class="fa-solid fa-swords"></i> 対戦型</label>
+                    <select id="opponentStrategyFilter"><option value="">すべて</option></select>
+                </div>
+            </div>
+            <span id="filterResultLabel" class="filter-result-label"></span>
+        </section>
+
+        <!-- 成績概要 -->
         <section class="card analysis-section">
             <div class="card-header">
                 <i class="fa-solid fa-gauge-high header-icon"></i>
@@ -59,7 +99,8 @@
             </div>
         </section>
 
-        <section class="card analysis-section">
+        <!-- 対局形式別勝率（対局形式未絞り込み時のみ表示） -->
+        <section class="card analysis-section" id="gameTypeSection">
             <div class="card-header">
                 <i class="fa-solid fa-layer-group header-icon"></i>
                 <h2>対局形式別勝率</h2>
@@ -78,9 +119,30 @@
             </div>
         </section>
 
-        <section class="card analysis-section">
+        <!-- 自戦型別勝率（自戦型未絞り込み時のみ表示） -->
+        <section class="card analysis-section" id="myStrategySection">
             <div class="card-header">
                 <i class="fa-solid fa-shield-halved header-icon"></i>
+                <h2>自戦型別勝率</h2>
+            </div>
+            <div class="table-wrapper">
+                <table class="analysis-table" id="myStrategyTable">
+                    <thead>
+                        <tr>
+                            <th>自戦型</th>
+                            <th>対局数</th>
+                            <th>勝率</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 対戦型別勝率（対戦型未絞り込み時のみ表示） -->
+        <section class="card analysis-section" id="opponentStrategySection">
+            <div class="card-header">
+                <i class="fa-solid fa-swords header-icon"></i>
                 <h2>対戦型別勝率</h2>
             </div>
             <div class="table-wrapper">
@@ -97,18 +159,19 @@
             </div>
         </section>
 
+        <!-- 終局理由別の割合 -->
         <section class="card analysis-section">
             <div class="card-header">
-                <i class="fa-solid fa-calendar-days header-icon"></i>
-                <h2>対局月別勝率</h2>
+                <i class="fa-solid fa-flag-checkered header-icon"></i>
+                <h2>終局理由別の割合</h2>
             </div>
             <div class="table-wrapper">
-                <table class="analysis-table" id="monthlyTable">
+                <table class="analysis-table" id="endReasonTable">
                     <thead>
                         <tr>
-                            <th>年月</th>
+                            <th>終局理由</th>
                             <th>対局数</th>
-                            <th>勝率</th>
+                            <th>割合</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
